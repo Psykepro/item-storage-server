@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  item_storage_server:
+    container_name: item-storage-server
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - rabbitmq
+    restart: always
+    volumes:
+      - ./:/app
+    networks:
+      - item_storage_network
+
+  rabbitmq:
+    image: 'rabbitmq:3.6-management-alpine'
+    ports:
+      # The standard AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
+    networks:
+      - item_storage_network
+
+networks:
+  item_storage_network:
+    driver: bridge
