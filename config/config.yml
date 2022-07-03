@@ -1,0 +1,26 @@
+rabbit_mq:
+  host: "rabbitmq"
+  port: "5672"
+  user: "guest"
+  password: "guest"
+  queue:
+    name: "items"
+    durable: false
+    auto_delete: false
+    exclusive: false
+    no_wait: false
+    args:
+  consumer:
+    tag: ""
+    auto_ack: true
+    no_local: false
+    args:
+logging:
+  file:
+    level: "info"
+    encoding: "console"
+    mode: "Development"
+  stdout:
+    level: "debug"
+    encoding: "console"
+    mode: "Development"
