@@ -11,14 +11,16 @@ import (
 )
 
 type Service struct {
-	storage      *collections.OrderedDict[*pb.Item]
+	storage      *collections.SafeOrderedDict[*pb.Item]
+	listCache    []*pb.Item
 	stdOutLogger domain.Logger
 	fileLogger   domain.Logger
 }
 
 func NewService(stdOutLogger domain.Logger, fileLogger domain.Logger) *Service {
 	return &Service{
-		storage:      collections.NewOrderedDict[*pb.Item](),
+		storage:      collections.NewSafeOrderedDict[*pb.Item](),
+		listCache:    make([]*pb.Item, 0, 0),
 		stdOutLogger: stdOutLogger,
 		fileLogger:   fileLogger,
 	}
@@ -108,13 +110,8 @@ func (s *Service) Get(uuid string, wg *sync.WaitGroup) {
 func (s *Service) List(wg *sync.WaitGroup) {
 	defer wg.Done()
 	s.stdOutLogger.Debugf("Initiating [LIST] items ...")
-	i := 0
-	response := &pb.ListItemsResponse{Items: make([]*pb.Item, s.storage.Count())}
-	for item := range s.storage.Iterate() {
-		response.Items[i] = item
-		i += 1
-	}
 
+	response := &pb.ListItemsResponse{Items: s.storage.List()}
 	asBytes, err := proto.Marshal(response)
 	if err != nil {
 		errMsg := fmt.Sprintf("Failed to marshal items on [LIST]. Err: %s", err)
