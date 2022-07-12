@@ -52,11 +52,9 @@ func (l *logger) InitFileLogger() {
 	case "console":
 		logFile, _ = os.OpenFile("responses.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		encoder = zapcore.NewConsoleEncoder(encoderCfg)
-		break
 	case "json":
 		logFile, _ = os.OpenFile("responses.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		encoder = zapcore.NewConsoleEncoder(encoderCfg)
-		break
 	default:
 		panic(fmt.Sprintf("not supported logger encoding: '%s'. supported ones are: 'console' and 'json'"))
 	}
@@ -82,10 +80,8 @@ func (l *logger) InitStdOutLogger() {
 	switch l.cfg.StdOut.Encoding {
 	case "console":
 		encoder = zapcore.NewConsoleEncoder(encoderCfg)
-		break
 	case "json":
 		encoder = zapcore.NewConsoleEncoder(encoderCfg)
-		break
 	default:
 		panic(fmt.Sprintf("not supported logger encoding: '%s'. supported ones are: 'console' and 'json'"))
 	}

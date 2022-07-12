@@ -25,7 +25,7 @@ func NewServer(rabbitMqCfg *config.RabbitMQ, itemRequestHandler domain.ItemReque
 
 func (s *Server) Run() {
 
-	amqpConn, rabbitMqCh, msgChannel, err := s.initToRabbitMq()
+	amqpConn, rabbitMqCh, msgChannel, err := s.initRabbitMq()
 	if err != nil {
 		s.logger.Fatalf(err.Error())
 	}
@@ -33,7 +33,7 @@ func (s *Server) Run() {
 	defer rabbitMqCh.Close()
 
 	// Starting handler
-	itemRequestChannel := make(chan *pb.ItemRequest)
+	itemRequestChannel := make(chan *pb.ItemRequest, 100) // Buffered
 	go s.itemRequestHandler.Handle(itemRequestChannel)
 
 	// Endless Consuming
@@ -50,7 +50,7 @@ func (s *Server) Run() {
 	}
 }
 
-func (s *Server) initToRabbitMq() (*amqp.Connection, *amqp.Channel, <-chan amqp.Delivery, error) {
+func (s *Server) initRabbitMq() (*amqp.Connection, *amqp.Channel, <-chan amqp.Delivery, error) {
 	s.logger.Debugf("Connecting to RabbitMQ ...")
 	amqpConn, err := rabbitmq.NewRabbitMQConn(s.rabbitMqCfg)
 	if err != nil {

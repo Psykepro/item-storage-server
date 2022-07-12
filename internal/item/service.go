@@ -2,7 +2,6 @@ package item
 
 import (
 	"fmt"
-	"sync"
 
 	pb "github.com/Psykepro/item-storage-protobuf/generated/item"
 	domain "github.com/Psykepro/item-storage-server/_domain"
@@ -26,8 +25,7 @@ func NewService(stdOutLogger domain.Logger, fileLogger domain.Logger) *Service {
 	}
 }
 
-func (s *Service) Create(item *pb.Item, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (s *Service) Create(item *pb.Item) {
 	s.stdOutLogger.Debug("Creating new item ...")
 
 	if item.Uuid == "" {
@@ -52,8 +50,7 @@ func (s *Service) Create(item *pb.Item, wg *sync.WaitGroup) {
 	s.stdOutLogger.Debugf("Successfully created item with uuid: [%s]", item.Uuid)
 }
 
-func (s *Service) Delete(uuid string, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (s *Service) Delete(uuid string) {
 	s.stdOutLogger.Debugf("Initiating [DELETE] item with uuid: [%s]", uuid)
 
 	if uuid == "" {
@@ -78,8 +75,7 @@ func (s *Service) Delete(uuid string, wg *sync.WaitGroup) {
 	s.stdOutLogger.Debugf("Successful [DELETE] item with uuid: [%s]", uuid)
 }
 
-func (s *Service) Get(uuid string, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (s *Service) Get(uuid string) {
 	s.stdOutLogger.Debugf("Initiating [GET] item with uuid: [%s] ...", uuid)
 	if uuid == "" {
 		s.stdOutLogger.Errorf("Failed to [GET] Item. Err: [invalid item uuid - %s]", uuid)
@@ -107,8 +103,7 @@ func (s *Service) Get(uuid string, wg *sync.WaitGroup) {
 	s.stdOutLogger.Debugf("Successful [GET] item with uuid: [%s].", uuid)
 }
 
-func (s *Service) List(wg *sync.WaitGroup) {
-	defer wg.Done()
+func (s *Service) List() {
 	s.stdOutLogger.Debugf("Initiating [LIST] items ...")
 
 	response := &pb.ListItemsResponse{Items: s.storage.List()}

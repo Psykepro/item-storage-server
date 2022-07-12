@@ -1,8 +1,6 @@
 package _domain
 
 import (
-	"sync"
-
 	pb "github.com/Psykepro/item-storage-protobuf/generated/item"
 )
 
@@ -11,8 +9,8 @@ type ItemRequestHandler interface {
 }
 
 type ItemService interface {
-	Create(item *pb.Item, wg *sync.WaitGroup)
-	Delete(uuid string, wg *sync.WaitGroup)
-	Get(uuid string, wg *sync.WaitGroup)
-	List(wg *sync.WaitGroup)
+	Create(item *pb.Item)
+	Delete(uuid string)
+	Get(uuid string)
+	List()
 }

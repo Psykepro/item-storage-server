@@ -25,17 +25,13 @@ func (h *RequestHandler) Handle(requestChan chan *pb.ItemRequest) {
 		wg.Add(1)
 		switch request.Command {
 		case pb.Command_CREATE:
-			h.service.Create(request.Item, wg)
-			break
+			h.service.Create(request.Item)
 		case pb.Command_DELETE:
-			h.service.Delete(request.Item.Uuid, wg)
-			break
+			h.service.Delete(request.Item.Uuid)
 		case pb.Command_GET:
-			h.service.Get(request.Item.Uuid, wg)
-			break
+			go h.service.Get(request.Item.Uuid)
 		case pb.Command_LIST:
-			h.service.List(wg)
-			break
+			go h.service.List()
 		default:
 			h.logger.Errorf("Unsupported command: [%s]", request.Command)
 			wg.Done()
